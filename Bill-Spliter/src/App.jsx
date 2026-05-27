@@ -56,7 +56,10 @@ function App() {
             placeholder="Enter bill amount"
             value={bill}
             onChange={(e) => {
-              const value = e.target.value;
+              let value = e.target.value;
+
+              if (value < 0) value = 0;
+
               setBill(value);
               validate(Number(value), people, tip);
             }}
@@ -110,6 +113,7 @@ function App() {
           <input
             type="number"
             placeholder="Enter custom tip"
+            value={tip}
             onChange={(e) => {
               const value = Number(e.target.value);
               setTip(value);
@@ -126,8 +130,11 @@ function App() {
             type="number"
             min="1"
             value={people}
-            onChange={(e) => {
-              const value = Number(e.target.value);
+           onChange={(e) => {
+              let value = Number(e.target.value);
+
+              if (value < 1) value = 1;
+
               setPeople(value);
               validate(Number(bill), value, tip);
             }}
