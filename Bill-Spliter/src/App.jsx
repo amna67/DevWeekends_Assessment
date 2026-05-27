@@ -7,17 +7,39 @@ function App() {
   const [tip, setTip] = useState(10);
   const [people, setPeople] = useState(1);
 
+  const billValue = Number(bill) || 0;
+  const peopleValue = Number(people) || 1;
+  const tipValue = Number(tip) || 0;
   // Calculations
-  const tipAmount = (bill * tip) / 100;
-  const totalAmount = Number(bill) + tipAmount;
-  const perPerson = totalAmount / people;
+  const tipAmount = (billValue * tipValue) / 100;
+  const total = billValue + tipAmount;
+  const perPerson = peopleValue > 0 ? total / peopleValue : 0;
 
   // Reset function
   const resetCalculator = () => {
     setBill("");
     setTip(10);
     setPeople(1);
+    setErrors({});
   };
+  //Validates input
+  const validate = (billValue, peopleValue, tipValue) => {
+  let newErrors = {};
+
+  if (!billValue || billValue <= 0) {
+    newErrors.bill = "Bill must be greater than 0";
+  }
+
+  if (!peopleValue || peopleValue < 1) {
+    newErrors.people = "People must be at least 1";
+  }
+
+  if (tipValue < 0 || tipValue > 100) {
+    newErrors.tip = "Tip must be between 0 and 100";
+  }
+
+  setErrors(newErrors);
+};
 
   return (
     <div className="container">
@@ -33,8 +55,13 @@ function App() {
             type="number"
             placeholder="Enter bill amount"
             value={bill}
-            onChange={(e) => setBill(e.target.value)}
+            onChange={(e) => {
+              const value = e.target.value;
+              setBill(value);
+              validate(Number(value), people, tip);
+            }}
           />
+          {errors.bill && <p className="error">{errors.bill}</p>}
         </div>
 
         {/* Tip Buttons */}
@@ -45,27 +72,36 @@ function App() {
 
             <button
               className={tip === 10 ? "active" : ""}
-              onClick={() => setTip(10)}
+              onClick={() => {
+                setTip(10);
+                validate(Number(bill), people, 10);
+              }}
             >
               10%
             </button>
 
             <button
               className={tip === 15 ? "active" : ""}
-              onClick={() => setTip(15)}
+              onClick={() =>  {              
+                setTip(15)
+                validate(Number(bill), people, 15);
+              }}
             >
               15%
             </button>
 
             <button
               className={tip === 20 ? "active" : ""}
-              onClick={() => setTip(20)}
+              onClick={() =>   {              
+                setTip(20)
+                validate(Number(bill), people, 20);
+              }}
             >
               20%
             </button>
-
           </div>
         </div>
+        {errors.tip && <p className="error">{errors.tip}</p>}
 
         {/* Custom Tip */}
         <div className="input-group">
@@ -74,7 +110,11 @@ function App() {
           <input
             type="number"
             placeholder="Enter custom tip"
-            onChange={(e) => setTip(Number(e.target.value))}
+            onChange={(e) => {
+              const value = Number(e.target.value);
+              setTip(value);
+              validate(Number(bill), people, value);
+            }}
           />
         </div>
 
@@ -86,8 +126,13 @@ function App() {
             type="number"
             min="1"
             value={people}
-            onChange={(e) => setPeople(Number(e.target.value))}
+            onChange={(e) => {
+              const value = Number(e.target.value);
+              setPeople(value);
+              validate(Number(bill), value, tip);
+            }}
           />
+          {errors.people && <p className="error">{errors.people}</p>}
         </div>
 
         {/* Results */}
@@ -100,7 +145,7 @@ function App() {
 
           <div className="result-box">
             <h3>Grand Total</h3>
-            <p>Rs {totalAmount.toFixed(2)}</p>
+            <p>Rs {total.toFixed(2)}</p>
           </div>
 
           <div className="result-box">
