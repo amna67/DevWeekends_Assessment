@@ -46,8 +46,13 @@ The output will be generated in the dist folder.
 
 Project Purpose:
 This project was built as part of a frontend assessment to demonstrate:
+
 -React fundamentals
+
 -State management using useState
+
 -Form handling and validation
+
 -UI/UX thinking
+
 -Responsive frontend design
